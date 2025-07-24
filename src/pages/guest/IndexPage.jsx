@@ -10,39 +10,169 @@ import {
   Calendar, Map, Headphones, Lock, AlertCircle,
   Download, Share, Bookmark, Filter, Search,
   Bell, Settings, Verified, Flame, Lightbulb,
-  PieChart, Activity, Briefcase, Megaphone, Building,
-  LineChart, BarChart, TrendingDown, Package, CreditCard,
-  MessageCircle, HelpCircle, FileText, ExternalLink
+  PieChart, Activity, Briefcase, Megaphone
 } from 'lucide-react';
 
-// Animated Money Icons
-const FloatingMoney = () => {
+// Enhanced Canvas Background with geometric shapes
+const GeometricBackground = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    const shapes = [];
+    const shapeCount = 15;
+
+    class GeometricShape {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 100 + 50;
+        this.rotation = 0;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+        this.opacity = Math.random() * 0.1 + 0.05;
+        this.type = Math.floor(Math.random() * 4); // 0: circle, 1: square, 2: triangle, 3: hexagon
+        this.color = `hsl(${220 + Math.random() * 40}, 70%, 60%)`;
+      }
+
+      update() {
+        this.rotation += this.rotationSpeed;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+
+        switch(this.type) {
+          case 0: // Circle
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+            ctx.stroke();
+            break;
+          case 1: // Square
+            ctx.strokeRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            break;
+          case 2: // Triangle
+            ctx.beginPath();
+            ctx.moveTo(0, -this.size / 2);
+            ctx.lineTo(-this.size / 2, this.size / 2);
+            ctx.lineTo(this.size / 2, this.size / 2);
+            ctx.closePath();
+            ctx.stroke();
+            break;
+          case 3: // Hexagon
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+              const angle = (i * Math.PI) / 3;
+              const x = Math.cos(angle) * (this.size / 2);
+              const y = Math.sin(angle) * (this.size / 2);
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            break;
+        }
+        ctx.restore();
+      }
+    }
+
+    const init = () => {
+      resizeCanvas();
+      for (let i = 0; i < shapeCount; i++) {
+        shapes.push(new GeometricShape());
+      }
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      shapes.forEach(shape => {
+        shape.update();
+        shape.draw();
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    init();
+    animate();
+
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-20 left-10 animate-bounce delay-100">
-        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg">$</div>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 pointer-events-none"
+    />
+  );
+};
+
+// Floating 2D Illustrations Component
+const FloatingElements = () => {
+  return (
+    <>
+      {/* Coins */}
+      <div className="absolute top-20 left-10 animate-bounce duration-3000">
+        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg transform rotate-12">
+          <DollarSign className="w-6 h-6 text-white" />
+        </div>
       </div>
-      <div className="absolute top-32 right-16 animate-bounce delay-300">
-        <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">€</div>
+      
+      <div className="absolute top-32 right-16 animate-bounce duration-4000 delay-1000">
+        <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg transform -rotate-12">
+          <Coins className="w-4 h-4 text-white" />
+        </div>
       </div>
-      <div className="absolute bottom-32 left-20 animate-bounce delay-500">
-        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow-lg">£</div>
+
+      {/* Geometric Shapes */}
+      <div className="absolute bottom-20 left-20 animate-pulse duration-2000">
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 transform rotate-45 rounded-lg opacity-20"></div>
       </div>
-      <div className="absolute bottom-20 right-24 animate-bounce delay-700">
-        <Coins className="w-8 h-8 text-orange-500" />
+
+      <div className="absolute top-40 right-32 animate-spin duration-20000">
+        <div className="w-6 h-6 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-30"></div>
       </div>
-      <div className="absolute top-1/2 right-8 animate-pulse delay-200">
-        <Gift className="w-6 h-6 text-purple-500" />
+
+      {/* Stars */}
+      <div className="absolute top-24 left-1/4 animate-pulse duration-1500">
+        <Star className="w-6 h-6 text-yellow-400 fill-current opacity-40" />
       </div>
-      <div className="absolute top-1/3 left-16 animate-pulse delay-600">
-        <Trophy className="w-7 h-7 text-yellow-600" />
+
+      <div className="absolute bottom-32 right-1/4 animate-pulse duration-2500 delay-500">
+        <Sparkles className="w-8 h-8 text-indigo-400 opacity-30" />
       </div>
-    </div>
+
+      {/* Trophy */}
+      <div className="absolute top-16 right-10 animate-bounce duration-3500 delay-700">
+        <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg transform rotate-6">
+          <Trophy className="w-5 h-5 text-white" />
+        </div>
+      </div>
+    </>
   );
 };
 
 // Stats Counter Component
-const StatsCounter = ({ end, suffix = "", duration = 2000, prefix = "" }) => {
+const StatsCounter = ({ end, suffix = "", duration = 2000 }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -56,7 +186,53 @@ const StatsCounter = ({ end, suffix = "", duration = 2000, prefix = "" }) => {
     requestAnimationFrame(animate);
   }, [end, duration]);
 
-  return <span>{prefix}{count.toLocaleString()}{suffix}</span>;
+  return <span>{count.toLocaleString()}{suffix}</span>;
+};
+
+// Progress Ring Component
+const ProgressRing = ({ progress, size = 80, strokeWidth = 8, color = "indigo" }) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const strokeDasharray = `${circumference} ${circumference}`;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+  const colorClasses = {
+    indigo: "stroke-indigo-500",
+    green: "stroke-green-500",
+    yellow: "stroke-yellow-500",
+    purple: "stroke-purple-500"
+  };
+
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          className="text-gray-200"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          strokeDasharray={strokeDasharray}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          className={`${colorClasses[color]} transition-all duration-1000`}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg font-bold text-gray-900">{progress}%</span>
+      </div>
+    </div>
+  );
 };
 
 // Header Component
@@ -73,82 +249,82 @@ const Header = () => {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       isScrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100' 
-        : 'bg-white'
+        ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100' 
+        : 'bg-white/60 backdrop-blur-sm'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Enhanced Logo */}
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                <DollarSign className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Gift className="w-6 h-6 text-white" />
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                <Sparkles className="w-2 h-2 text-white" />
-              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+              <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
             </div>
             <div>
-              <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 OfferWall
               </span>
-              <div className="text-xs text-gray-500 -mt-1">Earn Money Online</div>
+              <div className="text-xs text-gray-500 -mt-1">Premium Rewards</div>
             </div>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#earn" className="text-gray-600 hover:text-green-600 transition-colors font-medium relative group">
-              How to Earn
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+            <a href="#offers" className="text-gray-600 hover:text-indigo-600 transition-all duration-300 relative group font-medium">
+              Offers
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <a href="#offers" className="text-gray-600 hover:text-green-600 transition-colors font-medium relative group">
-              Available Offers
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+            <a href="#rewards" className="text-gray-600 hover:text-indigo-600 transition-all duration-300 relative group font-medium">
+              Rewards
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <a href="#payouts" className="text-gray-600 hover:text-green-600 transition-colors font-medium relative group">
-              Payouts
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+            <a href="#how-it-works" className="text-gray-600 hover:text-indigo-600 transition-all duration-300 relative group font-medium">
+              How it Works
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <a href="#reviews" className="text-gray-600 hover:text-green-600 transition-colors font-medium relative group">
-              Success Stories
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+            <a href="#leaderboard" className="text-gray-600 hover:text-indigo-600 transition-all duration-300 relative group font-medium">
+              Leaderboard
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
             </a>
           </nav>
 
-          {/* CTA Buttons */}
+          {/* Enhanced CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
-              Login
+            <button className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium">
+              Sign In
             </button>
-            <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
-              Start Earning $5 Bonus
+            <button className="relative overflow-hidden bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2.5 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <span className="relative z-10">Get Started</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </div>
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden p-2 text-gray-600"
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Enhanced Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md shadow-xl border-b border-gray-100 rounded-b-2xl">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl rounded-b-2xl">
             <div className="p-6 space-y-4">
-              <a href="#earn" className="block text-gray-600 hover:text-green-600 transition-colors py-2">How to Earn</a>
-              <a href="#offers" className="block text-gray-600 hover:text-green-600 transition-colors py-2">Available Offers</a>
-              <a href="#payouts" className="block text-gray-600 hover:text-green-600 transition-colors py-2">Payouts</a>
-              <a href="#reviews" className="block text-gray-600 hover:text-green-600 transition-colors py-2">Success Stories</a>
+              <a href="#offers" className="block text-gray-600 hover:text-indigo-600 transition-colors py-2">Offers</a>
+              <a href="#rewards" className="block text-gray-600 hover:text-indigo-600 transition-colors py-2">Rewards</a>
+              <a href="#how-it-works" className="block text-gray-600 hover:text-indigo-600 transition-colors py-2">How it Works</a>
+              <a href="#leaderboard" className="block text-gray-600 hover:text-indigo-600 transition-colors py-2">Leaderboard</a>
               <div className="pt-4 border-t border-gray-100 space-y-3">
-                <button className="block w-full text-left text-gray-600 py-2">Login</button>
-                <button className="block w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold">
-                  Start Earning $5 Bonus
+                <button className="block w-full text-left text-gray-600 py-2">Sign In</button>
+                <button className="block w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl font-medium">
+                  Get Started
                 </button>
               </div>
             </div>
@@ -162,57 +338,60 @@ const Header = () => {
 // Footer Component
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-gray-50 to-green-50 border-t border-gray-100">
+    <footer className="bg-gradient-to-br from-gray-50 to-indigo-50 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Company Info */}
+          {/* Enhanced Company Info */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                <DollarSign className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Gift className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 OfferWall
               </span>
             </div>
             <p className="text-gray-600 text-sm leading-relaxed max-w-sm">
-              The most trusted platform to earn money online. Complete simple tasks and get paid instantly.
+              The premium rewards platform where your time creates real value. Join millions earning daily rewards.
             </p>
             <div className="flex space-x-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center hover:bg-blue-200 transition-colors cursor-pointer">
-                <Facebook className="w-5 h-5 text-blue-600" />
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center hover:bg-blue-200 transition-colors cursor-pointer">
+                <Facebook className="w-4 h-4 text-blue-600" />
               </div>
-              <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center hover:bg-sky-200 transition-colors cursor-pointer">
-                <Twitter className="w-5 h-5 text-sky-600" />
+              <div className="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center hover:bg-sky-200 transition-colors cursor-pointer">
+                <Twitter className="w-4 h-4 text-sky-600" />
               </div>
-              <div className="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center hover:bg-pink-200 transition-colors cursor-pointer">
-                <MessageCircle className="w-5 h-5 text-pink-600" />
+              <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center hover:bg-indigo-200 transition-colors cursor-pointer">
+                <Linkedin className="w-4 h-4 text-indigo-600" />
+              </div>
+              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer">
+                <Github className="w-4 h-4 text-gray-600" />
               </div>
             </div>
           </div>
 
-          {/* Earn Money */}
+          {/* Platform */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
-              <Coins className="w-4 h-4 mr-2 text-green-500" />
-              Earn Money
+              <Layers className="w-4 h-4 mr-2 text-indigo-500" />
+              Platform
             </h3>
             <ul className="space-y-4">
-              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
-                Paid Surveys
+                How it Works
               </a></li>
-              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
-                Play Games
+                Earn Points
               </a></li>
-              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
-                Watch Videos
+                Redeem Rewards
               </a></li>
-              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
-                Cashback Shopping
+                Mobile App
               </a></li>
             </ul>
           </div>
@@ -220,34 +399,34 @@ const Footer = () => {
           {/* Support */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
-              <HelpCircle className="w-4 h-4 mr-2 text-blue-500" />
+              <Headphones className="w-4 h-4 mr-2 text-green-500" />
               Support
             </h3>
             <ul className="space-y-4">
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
                 Help Center
               </a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
                 Contact Us
               </a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
-                FAQ
+                Community
               </a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 text-sm transition-colors flex items-center">
+              <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
                 Live Chat
               </a></li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Resources */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
-              <FileText className="w-4 h-4 mr-2 text-purple-500" />
-              Legal
+              <Briefcase className="w-4 h-4 mr-2 text-purple-500" />
+              Resources
             </h3>
             <ul className="space-y-4">
               <li><a href="#" className="text-gray-600 hover:text-purple-600 text-sm transition-colors flex items-center">
@@ -264,7 +443,7 @@ const Footer = () => {
               </a></li>
               <li><a href="#" className="text-gray-600 hover:text-purple-600 text-sm transition-colors flex items-center">
                 <ChevronRight className="w-3 h-3 mr-2" />
-                Compliance
+                Security
               </a></li>
             </ul>
           </div>
@@ -274,13 +453,14 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-500 text-sm">© 2024 OfferWall. All rights reserved.</p>
             <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-1 shadow-sm border border-gray-100">
+                <Globe className="w-4 h-4 text-gray-400" />
+                <span className="text-gray-600 text-sm">English</span>
+                <ChevronDown className="w-3 h-3 text-gray-400" />
+              </div>
               <div className="flex items-center space-x-2 bg-green-50 rounded-lg px-3 py-1 border border-green-100">
                 <Shield className="w-4 h-4 text-green-500" />
                 <span className="text-green-600 text-sm font-medium">SSL Secured</span>
-              </div>
-              <div className="flex items-center space-x-2 bg-blue-50 rounded-lg px-3 py-1 border border-blue-100">
-                <Verified className="w-4 h-4 text-blue-500" />
-                <span className="text-blue-600 text-sm font-medium">Verified Platform</span>
               </div>
             </div>
           </div>
@@ -293,85 +473,72 @@ const Footer = () => {
 // Main Landing Page Component
 const LandingPage = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [activeEarningMethod, setActiveEarningMethod] = useState(0);
-  const [liveEarnings, setLiveEarnings] = useState(47382);
+  const [faqOpen, setFaqOpen] = useState(null);
+  const [liveStats, setLiveStats] = useState({
+    usersOnline: 12847,
+    todayEarnings: 47382,
+    completedOffers: 8923
+  });
 
   const testimonials = [
     {
-      name: "Sarah Mitchell",
+      name: "Sarah Johnson",
       role: "College Student",
-      quote: "I've made over $850 this month just completing surveys during my free time! OfferWall changed my financial situation completely.",
+      quote: "I've earned over $450 this month just by completing surveys and playing games during breaks. It's incredible!",
       avatar: "👩‍🎓",
-      earnings: "$2,847",
-      timeFrame: "Last 3 months",
-      location: "California, USA"
+      rating: 5,
+      earnings: "$1,847",
+      joinDate: "6 months ago"
     },
     {
-      name: "Ahmed Hassan", 
+      name: "Mike Chen", 
       role: "Part-time Worker",
-      quote: "The gaming offers are amazing! I earned $120 just by playing my favorite mobile games. It's like getting paid to have fun!",
-      avatar: "🎮",
-      earnings: "$1,956",
-      timeFrame: "Last 2 months",
-      location: "Dubai, UAE"
+      quote: "The platform is super user-friendly and payments are always instant. I love the variety of offers available!",
+      avatar: "👨‍💻",
+      rating: 5,
+      earnings: "$2,156",
+      joinDate: "1 year ago"
     },
     {
-      name: "Maria Rodriguez",
-      role: "Stay-at-home Mom",
-      quote: "Perfect for earning extra income during my baby's nap time. The cashback shopping feature alone saved me $300 this month!",
-      avatar: "👩‍👧",
+      name: "Emily Rodriguez",
+      role: "Freelancer",
+      quote: "Perfect side income source! The cashback shopping feature alone has saved me hundreds of dollars.",
+      avatar: "👩‍💼",
+      rating: 5,
       earnings: "$3,294",
-      timeFrame: "Last 4 months",
-      location: "Madrid, Spain"
+      joinDate: "8 months ago"
     }
   ];
 
-  const earningMethods = [
+  const faqData = [
     {
-      title: "Complete Surveys",
-      description: "Share your opinions and get paid $1-$15 per survey",
-      icon: BarChart3,
-      color: "blue",
-      earnings: "$5-15 per survey",
-      time: "5-20 minutes",
-      difficulty: "Easy"
+      question: "How quickly can I start earning?",
+      answer: "You can start earning immediately after signing up! Most users complete their first offer within minutes and see their first rewards within the same day."
     },
     {
-      title: "Play Mobile Games",
-      description: "Download games, reach levels, earn rewards",
-      icon: Gamepad2,
-      color: "purple",
-      earnings: "$10-50 per game",
-      time: "1-7 days",
-      difficulty: "Fun"
+      question: "What's the minimum payout amount?",
+      answer: "Our minimum payout is just $1, making it one of the lowest in the industry. You can cash out via PayPal, gift cards, or cryptocurrency."
     },
     {
-      title: "Watch Videos",
-      description: "Watch ads and entertaining content passively",
-      icon: Play,
-      color: "pink",
-      earnings: "$0.05-0.50 per video",
-      time: "30 seconds-5 minutes",
-      difficulty: "Very Easy"
+      question: "Are there any fees for withdrawals?",
+      answer: "No! We don't charge any fees for withdrawals. You keep 100% of what you earn, and all transaction fees are covered by us."
     },
     {
-      title: "Shop & Earn Cashback",
-      description: "Get up to 25% cashback from 1000+ stores",
-      icon: Coins,
-      color: "green",
-      earnings: "Up to 25% cashback",
-      time: "Normal shopping",
-      difficulty: "Automatic"
+      question: "How do I maximize my earnings?",
+      answer: "Complete your daily check-ins, participate in bonus events, refer friends, and try different types of offers to maximize your earning potential."
+    },
+    {
+      question: "Is my personal information safe?",
+      answer: "Absolutely! We use bank-level encryption and never share your personal information with third parties without your consent."
     }
   ];
 
-  const paymentMethods = [
-    { name: "PayPal", icon: "💳", min: "$1", time: "Instant" },
-    { name: "Bitcoin", icon: "₿", min: "$5", time: "Within 1 hour" },
-    { name: "Amazon Gift Card", icon: "🎁", min: "$1", time: "Instant" },
-    { name: "Visa Gift Card", icon: "💳", min: "$5", time: "Within 24 hours" },
-    { name: "Bank Transfer", icon: "🏦", min: "$10", time: "1-3 business days" },
-    { name: "Google Play", icon: "📱", min: "$1", time: "Instant" }
+  const leaderboardData = [
+    { rank: 1, name: "CryptoKing", earnings: "$2,847", avatar: "👑" },
+    { rank: 2, name: "SurveyMaster", earnings: "$2,156", avatar: "🏆" },
+    { rank: 3, name: "GameChamp", earnings: "$1,923", avatar: "🎮" },
+    { rank: 4, name: "ShopSmart", earnings: "$1,687", avatar: "🛍️" },
+    { rank: 5, name: "OfferHunter", earnings: "$1,452", avatar: "🎯" }
   ];
 
   useEffect(() => {
@@ -381,189 +548,284 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Simulate live earnings update
+  // Simulate live stats updates
   useEffect(() => {
     const interval = setInterval(() => {
-      setLiveEarnings(prev => prev + Math.floor(Math.random() * 50) + 10);
+      setLiveStats(prev => ({
+        usersOnline: prev.usersOnline + Math.floor(Math.random() * 10) - 5,
+        todayEarnings: prev.todayEarnings + Math.floor(Math.random() * 100),
+        completedOffers: prev.completedOffers + Math.floor(Math.random() * 5)
+      }));
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      <GeometricBackground />
+      <FloatingElements />
       <Header />
-      
-      {/* Hero Section */}
+
+      {/* Enhanced Hero Section */}
       <section className="relative pt-16 pb-20 overflow-hidden">
-        <FloatingMoney />
-        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-8 pt-16">
-            {/* Live Earnings Badge */}
-            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 px-6 py-3 rounded-full shadow-sm">
+            {/* Live Stats Badge */}
+            <div className="inline-flex items-center space-x-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 px-6 py-3 rounded-full">
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-semibold text-green-700">LIVE:</span>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-green-700">Live:</span>
               </div>
-              <div className="text-sm text-gray-700">
-                $<StatsCounter end={liveEarnings} /> earned by users today
+              <div className="text-sm text-gray-600">
+                <StatsCounter end={liveStats.usersOnline} /> users earning now
               </div>
-              <Flame className="w-4 h-4 text-orange-500" />
             </div>
 
-            {/* Main Headline */}
+            {/* Enhanced Main Headline */}
             <div className="space-y-6">
               <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-                Earn Money Online
-                <span className="block bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                  From Your Couch
+                Transform Your 
+                <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
+                  Spare Time
                 </span>
+                Into Real Money
               </h1>
               
               <p className="text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                Complete simple tasks in your spare time and get paid instantly. Join over 
-                <span className="font-bold text-green-600"> 3.2 million users</span> who've earned 
-                <span className="font-bold text-green-600"> $12M+ in real money!</span>
+                Complete simple tasks, play engaging games, and earn instant rewards. Join over 
+                <span className="font-bold text-indigo-600"> 2.5 million users</span> who've earned 
+                <span className="font-bold text-green-600"> $8M+ in rewards!</span>
               </p>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto py-8">
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <DollarSign className="w-6 h-6 text-white" />
+            {/* Enhanced Trust Indicators with Icons */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-8 max-w-4xl mx-auto">
+              <div className="flex flex-col items-center space-y-2 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">$1</div>
-                <div className="text-sm text-gray-600">Minimum Payout</div>
+                <span className="text-sm font-semibold text-gray-900">100% Secure</span>
+                <span className="text-xs text-gray-600">Bank-level security</span>
               </div>
-
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-6 h-6 text-white" />
+              
+              <div className="flex flex-col items-center space-y-2 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">Instant</div>
-                <div className="text-sm text-gray-600">Payments</div>
+                <span className="text-sm font-semibold text-gray-900">Instant Payouts</span>
+                <span className="text-xs text-gray-600">$1 minimum</span>
               </div>
-
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-white" />
+              
+              <div className="flex flex-col items-center space-y-2 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">3.2M+</div>
-                <div className="text-sm text-gray-600">Happy Users</div>
+                <span className="text-sm font-semibold text-gray-900">2.5M+ Users</span>
+                <span className="text-xs text-gray-600">Trusted globally</span>
               </div>
-
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-6 h-6 text-white fill-current" />
+              
+              <div className="flex flex-col items-center space-y-2 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white fill-current" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">4.8/5</div>
-                <div className="text-sm text-gray-600">User Rating</div>
+                <span className="text-sm font-semibold text-gray-900">4.9/5 Rating</span>
+                <span className="text-xs text-gray-600">50K+ reviews</span>
               </div>
             </div>
 
-            {/* CTA Buttons */}
+            {/* Enhanced CTA Buttons */}
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button className="group relative overflow-hidden bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white px-10 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl flex items-center space-x-3">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <Wallet className="w-5 h-5" />
+              <button className="group relative overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-10 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl flex items-center space-x-3">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <Rocket className="w-4 h-4" />
                 </div>
                 <span>Start Earning $5 Bonus</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
               
-              <button className="group flex items-center space-x-3 text-gray-700 border-2 border-gray-200 px-8 py-4 rounded-2xl font-semibold hover:border-green-300 hover:text-green-600 hover:bg-green-50 transition-all duration-300">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Play className="w-4 h-4 text-green-600" />
+              <button className="group flex items-center space-x-3 text-gray-700 border-2 border-gray-200 px-8 py-4 rounded-2xl font-semibold hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300">
+                <div className="w-8 h-8 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Play className="w-4 h-4 text-indigo-600" />
                 </div>
-                <span>See How It Works</span>
+                <span>Watch Demo</span>
               </button>
             </div>
 
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center items-center gap-6 pt-8 text-sm text-gray-500">
-              <div className="flex items-center space-x-2">
-                <Shield className="w-4 h-4 text-green-500" />
-                <span>SSL Encrypted</span>
+            {/* Enhanced Hero Visual Dashboard */}
+            <div className="relative max-w-5xl mx-auto mt-16">
+              <div className="relative bg-white rounded-3xl shadow-2xl border border-gray-100 p-8 transform hover:scale-105 transition-all duration-500">
+                {/* Dashboard Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <BarChart3 className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">Earnings Dashboard</h3>
+                      <p className="text-sm text-gray-500">Real-time overview</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-green-50 rounded-lg px-3 py-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-green-600">Live</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {/* Today's Earnings */}
+                  <div className="text-center bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <DollarSign className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">$47.32</div>
+                    <div className="text-sm text-gray-600 mb-2">Today's Earnings</div>
+                    <div className="text-xs text-green-600 flex items-center justify-center">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      +23% from yesterday
+                    </div>
+                  </div>
+                  
+                  {/* Points Balance */}
+                  <div className="text-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Coins className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">2,847</div>
+                    <div className="text-sm text-gray-600 mb-2">Points Balance</div>
+                    <div className="text-xs text-blue-600 flex items-center justify-center">
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      Ready to redeem
+                    </div>
+                  </div>
+                  
+                  {/* Streak Counter */}
+                  <div className="text-center bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Flame className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">12 Days</div>
+                    <div className="text-sm text-gray-600 mb-2">Active Streak</div>
+                    <div className="text-xs text-purple-600 flex items-center justify-center">
+                      <Crown className="w-3 h-3 mr-1" />
+                      Keep it up!
+                    </div>
+                  </div>
+                  
+                  {/* Level Progress */}
+                  <div className="text-center bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-6 border border-orange-100">
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-yellow-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Trophy className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">Level 15</div>
+                    <div className="text-sm text-gray-600 mb-2">Gold Member</div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-gradient-to-r from-orange-400 to-yellow-500 h-2 rounded-full animate-pulse" style={{width: '78%'}}></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mini Chart */}
+                <div className="mt-8 p-4 bg-gray-50 rounded-2xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-semibold text-gray-700">Weekly Performance</h4>
+                    <div className="text-xs text-green-600 flex items-center">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      +15% this week
+                    </div>
+                  </div>
+                  <div className="flex items-end justify-between h-16 space-x-1">
+                    {[40, 65, 45, 80, 35, 95, 70].map((height, i) => (
+                      <div key={i} className="flex-1 bg-gradient-to-t from-indigo-400 to-purple-500 rounded-t hover:from-purple-500 hover:to-indigo-400 transition-all duration-300 cursor-pointer" style={{height: `${height}%`}}></div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Verified className="w-4 h-4 text-blue-500" />
-                <span>Verified Platform</span>
+              
+              {/* Enhanced Floating elements */}
+              <div className="absolute -top-6 -right-6 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                <Star className="w-6 h-6 text-white fill-current" />
               </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-purple-500" />
-                <span>24/7 Support</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Globe className="w-4 h-4 text-orange-500" />
-                <span>Available Worldwide</span>
-              </div>
+              <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full animate-pulse shadow-lg"></div>
+              <div className="absolute top-1/2 -right-8 w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full animate-bounce delay-500"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Live Stats Section */}
-      <section className="py-16 bg-gradient-to-br from-green-50 to-emerald-50 border-y border-green-100">
+      <section className="py-16 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Real People, Real 
-              <span className="text-green-600"> Earnings</span>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Live Platform 
+              <span className="text-indigo-600">Activity</span>
             </h2>
-            <p className="text-lg text-gray-600">Live statistics updated every second</p>
+            <p className="text-gray-600">Real-time stats updating every few seconds</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-green-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+              <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <div className="text-4xl font-bold text-gray-900 mb-2">
-                <StatsCounter end={3247892} />
+                <StatsCounter end={2847362} suffix="" />
               </div>
               <div className="text-gray-600 mb-2">Total Users</div>
               <div className="text-sm text-green-600 flex items-center justify-center">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
-                <StatsCounter end={12847} /> online now
+                <StatsCounter end={liveStats.usersOnline} /> online now
               </div>
             </div>
 
-            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-blue-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <div className="text-4xl font-bold text-gray-900 mb-2">
-                $<StatsCounter end={12847382} />
+                $<StatsCounter end={8247382} suffix="" />
               </div>
               <div className="text-gray-600 mb-2">Total Paid Out</div>
-              <div className="text-sm text-blue-600 flex items-center justify-center">
+              <div className="text-sm text-green-600 flex items-center justify-center">
                 <TrendingUp className="w-3 h-3 mr-1" />
-                $<StatsCounter end={47382} /> today
+                $<StatsCounter end={liveStats.todayEarnings} /> today
               </div>
             </div>
 
-            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-purple-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Target className="w-8 h-8 text-white" />
               </div>
               <div className="text-4xl font-bold text-gray-900 mb-2">
-                <StatsCounter end={98765} suffix="+" />
+                <StatsCounter end={94736} suffix="+" />
               </div>
               <div className="text-gray-600 mb-2">Available Offers</div>
-              <div className="text-sm text-purple-600 flex items-center justify-center">
+              <div className="text-sm text-blue-600 flex items-center justify-center">
                 <Sparkles className="w-3 h-3 mr-1" />
-                <StatsCounter end={1247} /> completed today
+                <StatsCounter end={liveStats.completedOffers} /> completed today
               </div>
             </div>
 
-            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-orange-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="text-center bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-red-500"></div>
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Heart className="w-8 h-8 text-white" />
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">4.8/5</div>
-              <div className="text-gray-600 mb-2">User Satisfaction</div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">4.9/5</div>
+              <div className="text-gray-600 mb-2">User Rating</div>
               <div className="flex justify-center">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
@@ -574,227 +836,391 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* How to Earn Section */}
-      <section id="earn" className="py-20">
+      {/* Enhanced Features Section with More Visual Elements */}
+      <section id="offers" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-blue-50 border border-blue-200 px-4 py-2 rounded-full mb-6">
-              <Lightbulb className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-600">Multiple Ways to Earn</span>
+            <div className="inline-flex items-center space-x-2 bg-indigo-50 border border-indigo-200 px-4 py-2 rounded-full mb-6">
+              <Lightbulb className="w-4 h-4 text-indigo-500" />
+              <span className="text-sm font-medium text-indigo-600">Multiple Earning Methods</span>
             </div>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Turn Your Free Time Into 
-              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> Real Money</span>
+              Endless Ways to 
+              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"> Earn Money</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose from hundreds of earning opportunities that fit your schedule and interests.
+              Choose from various earning opportunities that perfectly match your lifestyle and interests.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {earningMethods.map((method, index) => {
-              const IconComponent = method.icon;
-              const colorClasses = {
-                blue: { bg: 'from-blue-500 to-indigo-500', text: 'text-blue-600', border: 'border-blue-200', hover: 'hover:border-blue-400' },
-                purple: { bg: 'from-purple-500 to-pink-500', text: 'text-purple-600', border: 'border-purple-200', hover: 'hover:border-purple-400' },
-                pink: { bg: 'from-pink-500 to-rose-500', text: 'text-pink-600', border: 'border-pink-200', hover: 'hover:border-pink-400' },
-                green: { bg: 'from-green-500 to-emerald-500', text: 'text-green-600', border: 'border-green-200', hover: 'hover:border-green-400' }
-              };
-
-              return (
-                <div 
-                  key={index}
-                  className={`bg-white rounded-3xl p-8 shadow-lg border ${colorClasses[method.color].border} ${colorClasses[method.color].hover} transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer group`}
-                  onMouseEnter={() => setActiveEarningMethod(index)}
-                >
-                  <div className={`w-16 h-16 bg-gradient-to-br ${colorClasses[method.color].bg} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <IconComponent className="w-8 h-8 text-white" />
-                  </div>
-                  
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">{method.title}</h3>
-                  <p className="text-gray-600 mb-6 text-center leading-relaxed">{method.description}</p>
-                  
-                  <div className="space-y-3">
-                    <div className={`flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2 ${colorClasses[method.color].text}`}>
-                      <span className="text-sm font-medium">Earnings:</span>
-                      <span className="text-sm font-bold">{method.earnings}</span>
-                    </div>
-                    <div className={`flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2 ${colorClasses[method.color].text}`}>
-                      <span className="text-sm font-medium">Time:</span>
-                      <span className="text-sm font-bold">{method.time}</span>
-                    </div>
-                    <div className={`flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2 ${colorClasses[method.color].text}`}>
-                      <span className="text-sm font-medium">Difficulty:</span>
-                      <span className="text-sm font-bold">{method.difficulty}</span>
-                    </div>
-                  </div>
-                  
-                  <button className={`w-full mt-6 bg-gradient-to-r ${colorClasses[method.color].bg} text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300`}>
-                    Start Earning
-                  </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Gaming Enhanced */}
+            <div className="group relative bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl hover:border-purple-200 transition-all duration-500 hover:scale-105 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full transform translate-x-8 -translate-y-8 opacity-50"></div>
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                  <Gamepad2 className="w-8 h-8 text-white" />
                 </div>
-              );
-            })}
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Mobile Gaming</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Play fun mobile games and reach specific levels to earn rewards. From casual puzzles to strategy games.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-purple-600 bg-purple-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    $5-$50 per game completion
+                  </div>
+                  <div className="flex items-center text-sm text-purple-600 bg-purple-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Daily gaming challenges
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">Difficulty: Easy</span>
+                  <div className="flex">
+                    <ProgressRing progress={85} size={40} strokeWidth={4} color="purple" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Surveys Enhanced */}
+            <div className="group relative bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200 transition-all duration-500 hover:scale-105 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full transform translate-x-8 -translate-y-8 opacity-50"></div>
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                  <BarChart3 className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Paid Surveys</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Share your opinions on products, services, and brands. Get matched with surveys that fit your profile.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-blue-600 bg-blue-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    $1-$15 per survey
+                  </div>
+                  <div className="flex items-center text-sm text-blue-600 bg-blue-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Smart matching system
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">Difficulty: Medium</span>
+                  <ProgressRing progress={72} size={40} strokeWidth={4} color="indigo" />
+                </div>
+              </div>
+            </div>
+
+            {/* Shopping Enhanced */}
+            <div className="group relative bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl hover:border-green-200 transition-all duration-500 hover:scale-105 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full transform translate-x-8 -translate-y-8 opacity-50"></div>
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                  <Coins className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Cashback Shopping</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Shop at your favorite stores and earn cashback. Over 1000 popular retailers included.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Up to 25% cashback
+                  </div>
+                  <div className="flex items-center text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    1000+ partner stores
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">Difficulty: Easy</span>
+                  <ProgressRing progress={95} size={40} strokeWidth={4} color="green" />
+                </div>
+              </div>
+            </div>
+
+            {/* App Downloads Enhanced */}
+            <div className="group relative bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl hover:border-orange-200 transition-all duration-500 hover:scale-105 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-100 to-red-100 rounded-full transform translate-x-8 -translate-y-8 opacity-50"></div>
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                  <Smartphone className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">App Testing</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Download and try new apps for a few minutes. Quick and easy way to earn rewards.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-orange-600 bg-orange-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    $0.50-$8 per app
+                  </div>
+                  <div className="flex items-center text-sm text-orange-600 bg-orange-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Instant tracking
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">Difficulty: Easy</span>
+                  <ProgressRing progress={90} size={40} strokeWidth={4} color="yellow" />
+                </div>
+              </div>
+            </div>
+
+            {/* Video Watching Enhanced */}
+            <div className="group relative bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl hover:border-pink-200 transition-all duration-500 hover:scale-105 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full transform translate-x-8 -translate-y-8 opacity-50"></div>
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                  <Play className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Watch & Earn</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Watch entertaining videos, ads, and content. Perfect for passive earning while relaxing.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-pink-600 bg-pink-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    $0.02-$0.50 per video
+                  </div>
+                  <div className="flex items-center text-sm text-pink-600 bg-pink-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Auto-play available
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">Difficulty: Very Easy</span>
+                  <ProgressRing progress={100} size={40} strokeWidth={4} color="purple" />
+                </div>
+              </div>
+            </div>
+
+            {/* Referrals Enhanced */}
+            <div className="group relative bg-white rounded-3xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl hover:border-yellow-200 transition-all duration-500 hover:scale-105 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full transform translate-x-8 -translate-y-8 opacity-50"></div>
+              <div className="relative">
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Refer Friends</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Invite your friends and earn a percentage of their lifetime earnings. Build passive income.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-yellow-600 bg-yellow-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    15% lifetime commission
+                  </div>
+                  <div className="flex items-center text-sm text-yellow-600 bg-yellow-50 rounded-lg px-3 py-2">
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    $3 signup bonus
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-500">Difficulty: Easy</span>
+                  <ProgressRing progress={88} size={40} strokeWidth={4} color="yellow" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Leaderboard Section */}
+      <section id="leaderboard" className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-purple-50 border border-purple-200 px-4 py-2 rounded-full mb-6">
-              <Rocket className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-purple-600">Simple 3-Step Process</span>
+            <div className="inline-flex items-center space-x-2 bg-yellow-50 border border-yellow-200 px-4 py-2 rounded-full mb-6">
+              <Trophy className="w-4 h-4 text-yellow-600" />
+              <span className="text-sm font-medium text-yellow-700">Top Earners This Month</span>
             </div>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Start Earning in 
-              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">3 Easy Steps</span>
+              Top Performer 
+              <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">Leaderboard</span>
             </h2>
             <p className="text-xl text-gray-600">
-              It takes less than 2 minutes to start making money
+              See how you stack up against our top earners
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-2">Monthly Champions</h3>
+                <p className="text-yellow-100">Updated in real-time</p>
+              </div>
+              
+              <div className="p-6 space-y-4">
+                {leaderboardData.map((user, index) => (
+                  <div key={user.rank} className={`flex items-center space-x-4 p-4 rounded-2xl transition-all duration-300 hover:scale-105 ${
+                    index === 0 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200' :
+                    index === 1 ? 'bg-gradient-to-r from-gray-50 to-blue-50 border border-gray-200' :
+                    index === 2 ? 'bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200' :
+                    'bg-gray-50 border border-gray-100'
+                  }`}>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold ${
+                      index === 0 ? 'bg-gradient-to-br from-yellow-400 to-orange-500' :
+                      index === 1 ? 'bg-gradient-to-br from-gray-400 to-gray-500' :
+                      index === 2 ? 'bg-gradient-to-br from-orange-400 to-red-500' :
+                      'bg-gradient-to-br from-indigo-400 to-purple-500'
+                    }`}>
+                      {index < 3 ? (
+                        index === 0 ? <Crown className="w-6 h-6" /> :
+                        index === 1 ? <Award className="w-6 h-6" /> :
+                        <Trophy className="w-6 h-6" />
+                      ) : user.rank}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">{user.avatar}</span>
+                        <span className="font-semibold text-gray-900">{user.name}</span>
+                        {index === 0 && <Verified className="w-4 h-4 text-blue-500" />}
+                      </div>
+                      <div className="text-sm text-gray-500">Rank #{user.rank}</div>
+                    </div>
+                    
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600">{user.earnings}</div>
+                      <div className="text-xs text-gray-500">This month</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="bg-gray-50 p-6 text-center border-t border-gray-100">
+                <button className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300">
+                  Join the Competition
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Enhanced Section */}
+      <section id="how-it-works" className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center space-x-2 bg-green-50 border border-green-200 px-4 py-2 rounded-full mb-6">
+              <Rocket className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-medium text-green-700">Simple Process</span>
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              How It 
+              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> Works</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Start earning in just three simple steps - it takes less than 2 minutes!
             </p>
           </div>
 
           <div className="relative">
             {/* Connection Lines */}
-            <div className="hidden lg:block absolute top-1/3 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-200 via-pink-200 to-green-200"></div>
+            <div className="hidden lg:block absolute top-1/2 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-indigo-200 via-purple-200 to-green-200 transform -translate-y-1/2"></div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-              {/* Step 1 */}
+              {/* Step 1 Enhanced */}
               <div className="text-center relative">
                 <div className="relative inline-block mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl hover:scale-110 transition-all duration-300">
-                    <span className="text-white text-3xl font-bold">1</span>
+                  <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform hover:scale-110 transition-all duration-300">
+                    <span className="text-white text-2xl font-bold">1</span>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-pulse"></div>
                 </div>
-                
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Sign Up Free</h3>
-                
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-all duration-300">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">Create Account</h3>
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                        <Mail className="w-5 h-5 text-purple-600" />
+                      <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                        <Mail className="w-4 h-4 text-indigo-600" />
                       </div>
-                      <div className="text-left">
-                        <div className="font-medium text-gray-900">Enter Email</div>
-                        <div className="text-sm text-gray-500">Quick & secure signup</div>
-                      </div>
+                      <span className="text-gray-600">Enter your email</span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                        <Shield className="w-5 h-5 text-purple-600" />
+                      <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                        <Lock className="w-4 h-4 text-indigo-600" />
                       </div>
-                      <div className="text-left">
-                        <div className="font-medium text-gray-900">Verify Account</div>
-                        <div className="text-sm text-gray-500">One-click verification</div>
-                      </div>
+                      <span className="text-gray-600">Create password</span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <Gift className="w-5 h-5 text-green-600" />
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
                       </div>
-                      <div className="text-left">
-                        <div className="font-medium text-gray-900">Get $5 Bonus</div>
-                        <div className="text-sm text-gray-500">Welcome reward</div>
-                      </div>
+                      <span className="text-gray-600">Verify account</span>
                     </div>
                   </div>
-                  <div className="mt-4 text-center text-purple-600 font-semibold text-sm">
+                  <div className="mt-4 text-sm text-indigo-600 font-medium">
                     ⚡ Takes only 30 seconds
                   </div>
                 </div>
               </div>
 
-              {/* Step 2 */}
+              {/* Step 2 Enhanced */}
               <div className="text-center relative">
                 <div className="relative inline-block mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl hover:scale-110 transition-all duration-300">
-                    <span className="text-white text-3xl font-bold">2</span>
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform hover:scale-110 transition-all duration-300">
+                    <span className="text-white text-2xl font-bold">2</span>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-pulse delay-100">
-                    <Target className="w-4 h-4 text-white" />
-                  </div>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full animate-pulse delay-100"></div>
                 </div>
-                
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Complete Tasks</h3>
-                
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100 hover:shadow-xl transition-all duration-300">
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="bg-blue-50 rounded-xl p-4 text-center hover:bg-blue-100 transition-colors cursor-pointer">
-                      <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                      <div className="text-sm font-medium text-blue-900">Surveys</div>
-                      <div className="text-xs text-blue-600">$1-15</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">Choose & Complete</h3>
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-purple-50 rounded-lg p-3 text-center">
+                      <Gamepad2 className="w-6 h-6 text-purple-600 mx-auto mb-1" />
+                      <span className="text-xs text-purple-600">Games</span>
                     </div>
-                    <div className="bg-purple-50 rounded-xl p-4 text-center hover:bg-purple-100 transition-colors cursor-pointer">
-                      <Gamepad2 className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                      <div className="text-sm font-medium text-purple-900">Games</div>
-                      <div className="text-xs text-purple-600">$10-50</div>
+                    <div className="bg-blue-50 rounded-lg p-3 text-center">
+                      <BarChart3 className="w-6 h-6 text-blue-600 mx-auto mb-1" />
+                      <span className="text-xs text-blue-600">Surveys</span>
                     </div>
-                    <div className="bg-pink-50 rounded-xl p-4 text-center hover:bg-pink-100 transition-colors cursor-pointer">
-                      <Play className="w-8 h-8 text-pink-600 mx-auto mb-2" />
-                      <div className="text-sm font-medium text-pink-900">Videos</div>
-                      <div className="text-xs text-pink-600">$0.05-0.50</div>
+                    <div className="bg-green-50 rounded-lg p-3 text-center">
+                      <Coins className="w-6 h-6 text-green-600 mx-auto mb-1" />
+                      <span className="text-xs text-green-600">Shopping</span>
                     </div>
-                    <div className="bg-green-50 rounded-xl p-4 text-center hover:bg-green-100 transition-colors cursor-pointer">
-                      <Coins className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                      <div className="text-sm font-medium text-green-900">Shopping</div>
-                      <div className="text-xs text-green-600">25% back</div>
+                    <div className="bg-orange-50 rounded-lg p-3 text-center">
+                      <Smartphone className="w-6 h-6 text-orange-600 mx-auto mb-1" />
+                      <span className="text-xs text-orange-600">Apps</span>
                     </div>
                   </div>
-                  <div className="text-center text-blue-600 font-semibold text-sm">
-                    🎯 1000+ offers available daily
+                  <div className="text-sm text-purple-600 font-medium">
+                    🎯 1000+ offers available
                   </div>
                 </div>
               </div>
 
-              {/* Step 3 */}
+              {/* Step 3 Enhanced */}
               <div className="text-center relative">
                 <div className="relative inline-block mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl hover:scale-110 transition-all duration-300">
-                    <span className="text-white text-3xl font-bold">3</span>
+                  <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl transform hover:scale-110 transition-all duration-300">
+                    <span className="text-white text-2xl font-bold">3</span>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center animate-pulse delay-200">
-                    <DollarSign className="w-4 h-4 text-white" />
-                  </div>
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full animate-pulse delay-200"></div>
                 </div>
-                
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Get Paid Instantly</h3>
-                
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl transition-all duration-300">
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center justify-between bg-green-50 rounded-lg p-3 hover:bg-green-100 transition-colors">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between bg-green-50 rounded-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
                           <span className="text-white text-xs font-bold">P</span>
                         </div>
-                        <span className="font-medium text-gray-900">PayPal</span>
+                        <span className="text-sm font-medium">PayPal</span>
                       </div>
-                      <span className="text-green-600 font-semibold text-sm">$1 min</span>
+                      <span className="text-green-600 text-sm">$1 min</span>
                     </div>
-                    <div className="flex items-center justify-between bg-green-50 rounded-lg p-3 hover:bg-green-100 transition-colors">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">₿</span>
-                        </div>
-                        <span className="font-medium text-gray-900">Bitcoin</span>
+                    <div className="flex items-center justify-between bg-green-50 rounded-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <Gift className="w-6 h-6 text-red-500" />
+                        <span className="text-sm font-medium">Gift Cards</span>
                       </div>
-                      <span className="text-green-600 font-semibold text-sm">$5 min</span>
-                    </div>
-                    <div className="flex items-center justify-between bg-green-50 rounded-lg p-3 hover:bg-green-100 transition-colors">
-                      <div className="flex items-center space-x-3">
-                        <Gift className="w-8 h-8 text-red-500" />
-                        <span className="font-medium text-gray-900">Gift Cards</span>
-                      </div>
-                      <span className="text-green-600 font-semibold text-sm">$1 min</span>
+                      <span className="text-green-600 text-sm">$1 min</span>
                     </div>
                   </div>
-                  <div className="text-center text-green-600 font-semibold text-sm">
-                    💳 Instant withdrawals available
+                  <div className="mt-4 text-sm text-green-600 font-medium">
+                    💳 Instant withdrawals
                   </div>
                 </div>
               </div>
@@ -803,75 +1229,8 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Payment Methods Section */}
-      <section id="payouts" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-green-50 border border-green-200 px-4 py-2 rounded-full mb-6">
-              <CreditCard className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-green-600">Multiple Payment Options</span>
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Get Paid Your 
-              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Preferred Way</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose from multiple secure payment methods with low minimums and fast processing times.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {paymentMethods.map((method, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl hover:border-green-200 transition-all duration-300 hover:scale-105">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center text-2xl">
-                    {method.icon}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{method.name}</h3>
-                    <p className="text-sm text-gray-500">Secure & Fast</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Minimum:</span>
-                    <span className="font-semibold text-green-600">{method.min}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Processing:</span>
-                    <span className="font-semibold text-gray-900">{method.time}</span>
-                  </div>
-                </div>
-                
-                <button className="w-full mt-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300">
-                  Select Payment
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <div className="inline-flex items-center space-x-6 bg-green-50 border border-green-200 rounded-2xl px-8 py-4">
-              <div className="flex items-center space-x-2">
-                <Shield className="w-5 h-5 text-green-600" />
-                <span className="text-green-700 font-medium">256-bit SSL Encryption</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Lock className="w-5 h-5 text-green-600" />
-                <span className="text-green-700 font-medium">PCI DSS Compliant</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Verified className="w-5 h-5 text-green-600" />
-                <span className="text-green-700 font-medium">Verified Platform</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Success Stories Section */}
-      <section id="reviews" className="py-20 bg-gradient-to-br from-gray-50 to-green-50">
+      {/* Enhanced Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gradient-to-br from-gray-50 to-indigo-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center space-x-2 bg-yellow-50 border border-yellow-200 px-4 py-2 rounded-full mb-6">
@@ -880,18 +1239,25 @@ const LandingPage = () => {
             </div>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               What Our 
-              <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">Earners Say</span>
+              <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">Success Stories</span> Say
             </h2>
-            <p className="text-xl text-gray-600">Real people, real earnings, real stories of financial success</p>
+            <p className="text-xl text-gray-600">Real reviews from real earners who transformed their free time into income</p>
           </div>
 
           <div className="relative">
             <div className="bg-white rounded-3xl p-12 shadow-2xl border border-gray-100 text-center overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400"></div>
               
               <div className="flex justify-center mb-8">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="w-8 h-8 text-yellow-400 fill-current animate-pulse" style={{animationDelay: `${star * 0.1}s`}} />
+                  <div key={star} className="relative">
+                    <Star className="w-8 h-8 text-yellow-400 fill-current animate-pulse" style={{animationDelay: `${star * 0.1}s`}} />
+                    {star <= testimonials[currentTestimonial].rating && (
+                      <div className="absolute inset-0">
+                        <Star className="w-8 h-8 text-yellow-500 fill-current" />
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
               
@@ -899,23 +1265,26 @@ const LandingPage = () => {
                 "{testimonials[currentTestimonial].quote}"
               </blockquote>
               
-              <div className="flex items-center justify-center space-x-8">
+              <div className="flex items-center justify-center space-x-6">
                 <div className="text-6xl animate-bounce">{testimonials[currentTestimonial].avatar}</div>
-                <div className="text-left space-y-2">
+                <div className="text-left">
                   <div className="text-xl font-bold text-gray-900">{testimonials[currentTestimonial].name}</div>
-                  <div className="text-gray-600">{testimonials[currentTestimonial].role}</div>
+                  <div className="text-gray-600 mb-1">{testimonials[currentTestimonial].role}</div>
                   <div className="flex items-center space-x-4">
-                    <div className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold">
-                      Earned: {testimonials[currentTestimonial].earnings}
+                    <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+                      Total Earned: {testimonials[currentTestimonial].earnings}
                     </div>
                     <div className="text-gray-500 text-sm">
-                      {testimonials[currentTestimonial].timeFrame}
+                      Member for {testimonials[currentTestimonial].joinDate}
                     </div>
                   </div>
-                  <div className="text-gray-400 text-sm flex items-center">
-                    <Globe className="w-3 h-3 mr-1" />
-                    {testimonials[currentTestimonial].location}
-                  </div>
+                </div>
+              </div>
+              
+              {/* Progress indicator */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                <div className="w-16 h-1 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-5000" style={{width: `${((currentTestimonial + 1) / testimonials.length) * 100}%`}}></div>
                 </div>
               </div>
             </div>
@@ -926,7 +1295,7 @@ const LandingPage = () => {
                   key={index}
                   className={`w-4 h-4 rounded-full transition-all duration-300 ${
                     index === currentTestimonial 
-                      ? 'bg-gradient-to-r from-yellow-500 to-orange-500 scale-125 shadow-lg' 
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-500 scale-125 shadow-lg' 
                       : 'bg-gray-300 hover:bg-gray-400 hover:scale-110'
                   }`}
                   onClick={() => setCurrentTestimonial(index)}
@@ -937,70 +1306,126 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-32 bg-gradient-to-br from-green-600 via-emerald-600 to-teal-600 relative overflow-hidden">
+      {/* FAQ Section */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center space-x-2 bg-blue-50 border border-blue-200 px-4 py-2 rounded-full mb-6">
+              <AlertCircle className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium text-blue-700">Frequently Asked Questions</span>
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              Got 
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Questions?</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Find answers to the most common questions about our platform
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {faqData.map((faq, index) => (
+              <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300">
+                <button
+                  className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  onClick={() => setFaqOpen(faqOpen === index ? null : index)}
+                >
+                  <span className="text-lg font-semibold text-gray-900">{faq.question}</span>
+                  <div className={`w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center transition-all duration-300 ${faqOpen === index ? 'rotate-180 bg-indigo-500' : ''}`}>
+                    {faqOpen === index ? (
+                      <Minus className="w-4 h-4 text-white" />
+                    ) : (
+                      <Plus className="w-4 h-4 text-indigo-600" />
+                    )}
+                  </div>
+                </button>
+                {faqOpen === index && (
+                  <div className="px-8 pb-6 text-gray-600 leading-relaxed animate-fadeIn">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Enhanced CTA Section */}
+      <section className="py-32 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
+        {/* Background Elements */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl"></div>
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="space-y-12">
+            {/* Badge */}
             <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-3 rounded-full">
-              <Flame className="w-5 h-5 text-yellow-300" />
-              <span className="text-white font-medium">Limited Time: Double Welcome Bonus</span>
+              <Sparkles className="w-5 h-5 text-yellow-300" />
+              <span className="text-white font-medium">Limited Time: $10 Welcome Bonus</span>
             </div>
 
+            {/* Main Headline */}
             <div className="space-y-8">
               <h2 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
-                Ready to Start
+                Ready to Start Your
                 <span className="block bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 bg-clip-text text-transparent">
-                  Making Money?
+                  Earning Journey?
                 </span>
               </h2>
               
               <p className="text-xl lg:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed">
-                Join millions of users worldwide who are already earning real money in their spare time.
+                Join over 2.5 million users worldwide and transform your spare time into real income.
                 <span className="block text-yellow-300 font-bold mt-4 text-2xl">
-                  🎁 Get $10 Welcome Bonus (Limited Time!)
+                  🎁 Get $10 instantly when you sign up today!
                 </span>
               </p>
             </div>
 
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-6 sm:space-y-0 sm:space-x-8">
-              <button className="group relative overflow-hidden bg-white text-green-600 px-12 py-6 rounded-2xl text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl flex items-center space-x-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Rocket className="w-5 h-5 text-green-600" />
+              <button className="group relative overflow-hidden bg-white text-indigo-600 px-12 py-5 rounded-2xl text-xl font-bold transition-all duration-300 hover:scale-110 hover:shadow-2xl flex items-center space-x-3">
+                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-indigo-600" />
                 </div>
                 <span>Claim $10 Bonus Now</span>
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 <div className="absolute inset-0 bg-gradient-to-r from-yellow-100 to-orange-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
               
-              <div className="text-center text-white/80">
-                <div className="text-sm mb-1">⚡ Setup takes 30 seconds</div>
-                <div className="text-sm">🔒 No credit card required</div>
+              <button className="group flex items-center space-x-3 text-white border-2 border-white/30 px-8 py-5 rounded-2xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300">
+                <Play className="w-6 h-6" />
+                <span>Watch Success Stories</span>
+              </button>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto pt-16">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-3">⚡</div>
+                <div className="font-bold text-white text-lg">Instant Setup</div>
+                <div className="text-white/80 text-sm">Start earning in under 60 seconds</div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-3">💎</div>
+                <div className="font-bold text-white text-lg">Premium Platform</div>
+                <div className="text-white/80 text-sm">Industry-leading rewards & features</div>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="text-3xl mb-3">🔐</div>
+                <div className="font-bold text-white text-lg">100% Secure</div>
+                <div className="text-white/80 text-sm">Bank-level security & encryption</div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto pt-16">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="text-3xl mb-3">🚀</div>
-                <div className="font-bold text-white text-lg">Start Immediately</div>
-                <div className="text-white/80 text-sm">Begin earning within minutes of signup</div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="text-3xl mb-3">💰</div>
-                <div className="font-bold text-white text-lg">Real Money</div>
-                <div className="text-white/80 text-sm">Actual cash, not points or credits</div>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="text-3xl mb-3">🌍</div>
-                <div className="font-bold text-white text-lg">Global Platform</div>
-                <div className="text-white/80 text-sm">Available in 180+ countries</div>
-              </div>
+            {/* Money Back Guarantee */}
+            <div className="inline-flex items-center space-x-3 bg-green-500/20 border border-green-400/30 px-6 py-3 rounded-full">
+              <Shield className="w-5 h-5 text-green-300" />
+              <span className="text-green-100 font-medium">30-Day Money Back Guarantee</span>
             </div>
           </div>
         </div>
