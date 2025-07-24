@@ -12,6 +12,7 @@ import { MdOutlineErrorOutline, MdOutlinePayments } from "react-icons/md";
 import { IoIosHelpBuoy } from "react-icons/io";
 import { LuArrowLeftRight, LuCrown } from "react-icons/lu";
 import { GrConfigure } from "react-icons/gr";
+import { FiTarget } from "react-icons/fi";
 
 const PagesURL = {
     ROOT: {
@@ -68,6 +69,11 @@ const PagesURL = {
         TITLE: "Offerwall",
         URL: "/offerwall",
         ICON: GrConfigure,
+    },
+    DEMO: {
+        TITLE: "Offerwall",
+        URL: "/demo",
+        ICON: FiTarget,
     },
     REPORTS: {
         TITLE: "Reports",

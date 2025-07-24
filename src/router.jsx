@@ -20,6 +20,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import ADashboardPage from "./pages/admin/ADashboardPage";
 import OfferwallPage from "./pages/auth/OfferwallPage";
 import AUsersPage from "./pages/admin/AUsersPage";
+import OfferFrame from "./pages/DemoPage";
+import DemoPage from "./pages/DemoPage";
 
 const router = createBrowserRouter([
     {
@@ -99,6 +101,10 @@ const router = createBrowserRouter([
                 element: <AUsersPage />,
             },
         ],
+    },
+    {
+        path: PagesURL.DEMO.URL,
+        element: <DemoPage />,
     },
     {
         path: PagesURL.DOCS.URL,
