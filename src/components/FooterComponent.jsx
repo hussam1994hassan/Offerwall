@@ -1,56 +1,214 @@
+import {
+    Briefcase,
+    ChevronDown,
+    ChevronRight,
+    Facebook,
+    Gift,
+    Github,
+    Globe,
+    Headphones,
+    Layers,
+    Linkedin,
+    Shield,
+    Twitter,
+} from "lucide-react";
 import React from "react";
 
 const FooterComponent = () => {
     return (
-        <footer className="bg-gray-400 text-neutral-800 py-8">
-            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-                <div className="mb-4 md:mb-0">
-                    <span className="text-xl font-bold text-white">
-                        MyCompany
-                    </span>
-                    <p className="text-sm text-neutral-800 mt-1">
-                        © {new Date().getFullYear()} All rights reserved.
-                    </p>
+        <footer className="bg-gradient-to-br from-gray-50 to-indigo-50 border-t border-gray-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    {/* Enhanced Company Info */}
+                    <div className="space-y-6">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <Gift className="w-6 h-6 text-white" />
+                            </div>
+                            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                OfferWall
+                            </span>
+                        </div>
+                        <p className="text-gray-600 text-sm leading-relaxed max-w-sm">
+                            The premium rewards platform where your time creates
+                            real value. Join millions earning daily rewards.
+                        </p>
+                        <div className="flex space-x-4">
+                            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center hover:bg-blue-200 transition-colors cursor-pointer">
+                                <Facebook className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div className="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center hover:bg-sky-200 transition-colors cursor-pointer">
+                                <Twitter className="w-4 h-4 text-sky-600" />
+                            </div>
+                            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center hover:bg-indigo-200 transition-colors cursor-pointer">
+                                <Linkedin className="w-4 h-4 text-indigo-600" />
+                            </div>
+                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer">
+                                <Github className="w-4 h-4 text-gray-600" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Platform */}
+                    <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
+                            <Layers className="w-4 h-4 mr-2 text-indigo-500" />
+                            Platform
+                        </h3>
+                        <ul className="space-y-4">
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    How it Works
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Earn Points
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Redeem Rewards
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-indigo-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Mobile App
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Support */}
+                    <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
+                            <Headphones className="w-4 h-4 mr-2 text-green-500" />
+                            Support
+                        </h3>
+                        <ul className="space-y-4">
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Help Center
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Contact Us
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Community
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-green-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Live Chat
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Resources */}
+                    <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
+                            <Briefcase className="w-4 h-4 mr-2 text-purple-500" />
+                            Resources
+                        </h3>
+                        <ul className="space-y-4">
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-purple-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Privacy Policy
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-purple-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Terms of Service
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-purple-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Cookie Policy
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    className="text-gray-600 hover:text-purple-600 text-sm transition-colors flex items-center"
+                                >
+                                    <ChevronRight className="w-3 h-3 mr-2" />
+                                    Security
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div className="flex space-x-6">
-                    <a href="#" className="hover:text-white">
-                        Home
-                    </a>
-                    <a href="#" className="hover:text-white">
-                        About
-                    </a>
-                    <a href="#" className="hover:text-white">
-                        Contact
-                    </a>
-                </div>
-                <div className="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" className="text-neutral-800 hover:text-white">
-                        <svg
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                            className="w-5 h-5"
-                        >
-                            <path d="M22.46 6c-.77.35-1.6.58-2.47.69a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04A4.28 4.28 0 0 0 16.11 4c-2.37 0-4.29 1.92-4.29 4.29 0 .34.04.67.11.99C7.69 9.09 4.07 7.38 1.64 4.77c-.37.64-.58 1.39-.58 2.19 0 1.51.77 2.85 1.95 3.63a4.28 4.28 0 0 1-1.94-.54v.05c0 2.11 1.5 3.87 3.49 4.27-.36.1-.74.16-1.13.16-.28 0-.54-.03-.8-.08.54 1.68 2.12 2.9 3.99 2.93A8.6 8.6 0 0 1 2 19.54a12.13 12.13 0 0 0 6.56 1.92c7.88 0 12.2-6.53 12.2-12.2 0-.19 0-.38-.01-.57A8.7 8.7 0 0 0 24 4.59a8.44 8.44 0 0 1-2.54.7z" />
-                        </svg>
-                    </a>
-                    <a href="#" className="text-neutral-800 hover:text-white">
-                        <svg
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                            className="w-5 h-5"
-                        >
-                            <path d="M12 2.04c-5.5 0-9.96 4.46-9.96 9.96 0 4.41 3.6 8.07 8.24 8.93v-6.32h-2.48v-2.61h2.48V9.41c0-2.45 1.49-3.8 3.68-3.8 1.07 0 2.19.19 2.19.19v2.41h-1.24c-1.22 0-1.6.76-1.6 1.54v1.85h2.72l-.44 2.61h-2.28v6.32c4.64-.86 8.24-4.52 8.24-8.93 0-5.5-4.46-9.96-9.96-9.96z" />
-                        </svg>
-                    </a>
-                    <a href="#" className="text-neutral-800 hover:text-white">
-                        <svg
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                            className="w-5 h-5"
-                        >
-                            <path d="M21.54 7.2c-.13-.49-.52-.88-1.01-1.01C19.13 5.8 12 5.8 12 5.8s-7.13 0-8.53.39c-.49.13-.88.52-1.01 1.01C2 8.6 2 12 2 12s0 3.4.46 4.8c.13.49.52.88 1.01 1.01C4.87 18.2 12 18.2 12 18.2s7.13 0 8.53-.39c.49-.13.88-.52 1.01-1.01.46-1.4.46-4.8.46-4.8s0-3.4-.46-4.8zM9.75 15.02V8.98l6.5 3.02-6.5 3.02z" />
-                        </svg>
-                    </a>
+
+                <div className="border-t border-gray-200 mt-12 pt-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                        <p className="text-gray-500 text-sm">
+                            © 2024 OfferWall. All rights reserved.
+                        </p>
+                        <div className="flex items-center space-x-6">
+                            <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-1 shadow-sm border border-gray-100">
+                                <Globe className="w-4 h-4 text-gray-400" />
+                                <span className="text-gray-600 text-sm">
+                                    English
+                                </span>
+                                <ChevronDown className="w-3 h-3 text-gray-400" />
+                            </div>
+                            <div className="flex items-center space-x-2 bg-green-50 rounded-lg px-3 py-1 border border-green-100">
+                                <Shield className="w-4 h-4 text-green-500" />
+                                <span className="text-green-600 text-sm font-medium">
+                                    SSL Secured
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>

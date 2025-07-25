@@ -43,19 +43,9 @@ const DropdownMenu = () => {
                 className="focus:outline-none cursor-pointer flex flex-row items-center justify-between gap-2"
                 onClick={() => setOpen((prev) => !prev)}
             >
-                <div className="hidden md:flex flex-col items-end">
-                    <span className="text-base text-gray-600 capitalize font-semibold">
-                        {user?.first_name} {user?.last_name}
-                    </span>
-                    <small className="text-sm text-green-500 font-medium">
-                        ${user?.balance.toFixed(2)}
-                    </small>
-                </div>
-                <img
-                    src={avatarUrl}
-                    alt="avatar"
-                    className="w-10 h-10 rounded-xl"
-                />
+                <span className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    J
+                </span>
             </button>
             {open && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg z-50 ring-1 ring-black/5">

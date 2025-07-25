@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router";
 import PagesURL from "./constants/PagesURL";
-import IndexPage from "./pages/guest/IndexPage";
 import DashboardPage from "./pages/auth/DashboardPage";
 import LoginPage from "./pages/guest/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
@@ -20,8 +19,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import ADashboardPage from "./pages/admin/ADashboardPage";
 import OfferwallPage from "./pages/auth/OfferwallPage";
 import AUsersPage from "./pages/admin/AUsersPage";
-import OfferFrame from "./pages/DemoPage";
 import DemoPage from "./pages/DemoPage";
+import LandingPage from "./pages/guest/LandingPage";
 
 const router = createBrowserRouter([
     {
@@ -30,7 +29,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: PagesURL.ROOT.URL,
-                element: <IndexPage />,
+                element: <LandingPage />,
             },
             {
                 path: PagesURL.LOGIN.URL,

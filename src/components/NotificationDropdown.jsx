@@ -1,3 +1,4 @@
+import { Bell } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
     MdNotificationsActive,
@@ -27,28 +28,18 @@ const NotificationDropdown = () => {
     }, []);
 
     return (
-        <div className="relative ml-4" ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef}>
             <button
                 className="relative focus:outline-none cursor-pointer group"
                 onClick={() => setOpen((prev) => !prev)}
                 aria-label="Notifications"
             >
                 <span className="relative flex items-center justify-center">
-                    {notifications.length > 0 ? (
-                        <MdNotificationsActive
-                            size={30}
-                            className="text-gray-600 group-hover:text-gray-800"
-                        />
-                    ) : (
-                        <MdOutlineNotificationsNone
-                            size={30}
-                            className="text-gray-400 group-hover:text-gray-600"
-                        />
-                    )}
+                    <span className="relative p-1 text-gray-600 hover:text-gray-900 transition-colors">
+                        <Bell size={22} />
+                    </span>
                     {notifications.length > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 shadow border-2 border-white">
-                            {notifications.length}
-                        </span>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                     )}
                 </span>
             </button>
